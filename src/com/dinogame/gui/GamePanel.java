@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Color;
 import com.dinogame.entities.Dinosaur;
 import com.dinogame.entities.Obstacle;
+import com.dinogame.threads.FloorThread;
 import com.dinogame.threads.GameThread;
 import com.dinogame.threads.ScoreThread;
 import java.awt.event.KeyListener;
@@ -27,6 +28,9 @@ public class GamePanel extends JPanel implements KeyListener {
     private GameThread loghilo;
     private ScoreThread score;
     private boolean juegoTerminado = false;
+    
+    private FloorThread logicaSuelo; 
+    private int sueloX = 0;          
     // Constructor del lienzo
     public GamePanel() {
         dino = new Dinosaur(50, 350);
@@ -40,12 +44,16 @@ public class GamePanel extends JPanel implements KeyListener {
         
         //implemetamos el hilo del dino para saltar
         loghilo = new GameThread(this);
-        Thread hilop = new Thread(loghilo);
-        hilop.start();
-        
         score = new ScoreThread(this);
+        logicaSuelo = new FloorThread(this);
+        
+        Thread hilop = new Thread(loghilo);
         Thread hilop2 = new Thread(score);
+        Thread suelo = new Thread(logicaSuelo);
+        
+        hilop.start();
         hilop2.start();
+        suelo.start();
          }
 
     // creamos un metodo del pintado del lienzo para verificar 
@@ -111,9 +119,33 @@ public class GamePanel extends JPanel implements KeyListener {
              loghilo.detener();
              score.detener();
          }
+         
+         if (dino.getBounds().intersects(cactus.getBounds())) {
+                juegoTerminado = true;
+                if(loghilo != null){
+                loghilo.detener();
+                }
+                if (score != null) {
+                score.detener();
+                }
+                if(logicaSuelo != null){
+                logicaSuelo.detener();
+                }
+        }
     }
     
     public void incrementarPuntaje(){
         this.puntaje++;
     }
+    
+    public void actualizarSuelo() {
+    if (juegoTerminado) return; // Si perdiste, el suelo se detiene
+    
+    // Movemos el suelo hacia la izquierda
+    sueloX -= 5; 
+   
+    if (sueloX <= -40) {
+        sueloX = 0;
+    }
+}
 }
