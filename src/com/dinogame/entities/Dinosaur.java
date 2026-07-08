@@ -57,6 +57,8 @@ public class Dinosaur {
                 saltar = false;
             }
         }
-        
     }
-}
+        public java.awt.Rectangle getBounds(){
+            return new java.awt.Rectangle(this.x, this.y, this.ancho, this.alto);
+        }
+    }

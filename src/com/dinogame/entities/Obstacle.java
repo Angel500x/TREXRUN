@@ -39,4 +39,8 @@ public class Obstacle {
     public int getY() { return y; }
     public int getAncho() { return ancho; }
     public int getAlto() { return alto; }
+    
+    public java.awt.Rectangle getBounds(){
+        return new java.awt.Rectangle(this.x, this.y, this.ancho, this.ancho);
+    }
 }

@@ -23,6 +23,10 @@ public class GamePanel extends JPanel implements KeyListener {
     private Dinosaur dino;
     private int puntaje = 0;
     private Obstacle cactus;
+    
+    private GameThread loghilo;
+    private ScoreThread score;
+    private boolean juegoTerminado = false;
     // Constructor del lienzo
     public GamePanel() {
         dino = new Dinosaur(50, 350);
@@ -35,11 +39,11 @@ public class GamePanel extends JPanel implements KeyListener {
         addKeyListener(this);
         
         //implemetamos el hilo del dino para saltar
-        GameThread loghilo = new GameThread(this);
+        loghilo = new GameThread(this);
         Thread hilop = new Thread(loghilo);
         hilop.start();
         
-        ScoreThread score = new ScoreThread(this);
+        score = new ScoreThread(this);
         Thread hilop2 = new Thread(score);
         hilop2.start();
          }
@@ -67,6 +71,12 @@ public class GamePanel extends JPanel implements KeyListener {
             g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
             //dibujamos el texto del puntaje
             g.drawString("SCORE: " + puntaje, 650, 40);
+            
+            if (juegoTerminado) {
+            g.setColor(Color.RED);
+            g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 40));
+            g.drawString("GAME OVER", 280, 200);
+            }
     }
     
     @Override
@@ -88,11 +98,18 @@ public class GamePanel extends JPanel implements KeyListener {
     }
     // metodo actulizar ser usado en el hilo
     public void actualizarJuego(){
+        if (juegoTerminado) return;
         dino.actualizar();
          cactus.actualizar();
          
          if(cactus.getX() < -30){
              cactus = new Obstacle(850, 350);
+         }
+         
+         if (dino.getBounds().intersects(cactus.getBounds())){
+             juegoTerminado = true;
+             loghilo.detener();
+             score.detener();
          }
     }
     
