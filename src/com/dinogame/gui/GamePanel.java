@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Color;
 import com.dinogame.entities.Dinosaur;
+import com.dinogame.threads.GameThread;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 
@@ -27,6 +28,11 @@ public class GamePanel extends JPanel implements KeyListener {
         //Tecla 
         setFocusable(true);
         addKeyListener(this);
+        
+        //implemetamos el hilo del dino para saltar
+        GameThread loghilo = new GameThread(this);
+        Thread hilop = new Thread(loghilo);
+        hilop.start();
          }
 
     // creamos un metodo del pintado del lienzo para verificar 
@@ -63,5 +69,9 @@ public class GamePanel extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent ke) {
     
+    }
+    // metodo actulizar ser usado en el hilo
+    public void actualizarJuego(){
+        dino.actualizar();
     }
 }
