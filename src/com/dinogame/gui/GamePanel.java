@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Color;
 import com.dinogame.entities.Dinosaur;
+import com.dinogame.entities.Obstacle;
 import com.dinogame.threads.GameThread;
 import com.dinogame.threads.ScoreThread;
 import java.awt.event.KeyListener;
@@ -21,9 +22,11 @@ public class GamePanel extends JPanel implements KeyListener {
     
     private Dinosaur dino;
     private int puntaje = 0;
+    private Obstacle cactus;
     // Constructor del lienzo
     public GamePanel() {
         dino = new Dinosaur(50, 350);
+        cactus = new Obstacle(850, 350);
         // color del panel 
         setBackground(Color.WHITE);
         
@@ -57,7 +60,7 @@ public class GamePanel extends JPanel implements KeyListener {
           //dibujamos un rectangulo del dino cerca del piso
           //50 en x y 350 en y -> 40 y 50 de ancho y alto de dino
           dino.dibujar(g);
-          
+          cactus.dibujar(g);
           // CColor de la letras del puntaje
             g.setColor(Color.BLACK);
             // fuente de la letra
@@ -86,6 +89,11 @@ public class GamePanel extends JPanel implements KeyListener {
     // metodo actulizar ser usado en el hilo
     public void actualizarJuego(){
         dino.actualizar();
+         cactus.actualizar();
+         
+         if(cactus.getX() < -30){
+             cactus = new Obstacle(850, 350);
+         }
     }
     
     public void incrementarPuntaje(){
