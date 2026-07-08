@@ -13,12 +13,14 @@ import java.awt.Graphics;
 import java.awt.Color;
 import com.dinogame.entities.Dinosaur;
 import com.dinogame.threads.GameThread;
+import com.dinogame.threads.ScoreThread;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 
 public class GamePanel extends JPanel implements KeyListener {
     
     private Dinosaur dino;
+    private int puntaje = 0;
     // Constructor del lienzo
     public GamePanel() {
         dino = new Dinosaur(50, 350);
@@ -33,6 +35,10 @@ public class GamePanel extends JPanel implements KeyListener {
         GameThread loghilo = new GameThread(this);
         Thread hilop = new Thread(loghilo);
         hilop.start();
+        
+        ScoreThread score = new ScoreThread(this);
+        Thread hilop2 = new Thread(score);
+        hilop2.start();
          }
 
     // creamos un metodo del pintado del lienzo para verificar 
@@ -51,6 +57,13 @@ public class GamePanel extends JPanel implements KeyListener {
           //dibujamos un rectangulo del dino cerca del piso
           //50 en x y 350 en y -> 40 y 50 de ancho y alto de dino
           dino.dibujar(g);
+          
+          // CColor de la letras del puntaje
+            g.setColor(Color.BLACK);
+            // fuente de la letra
+            g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
+            //dibujamos el texto del puntaje
+            g.drawString("SCORE: " + puntaje, 650, 40);
     }
     
     @Override
@@ -73,5 +86,9 @@ public class GamePanel extends JPanel implements KeyListener {
     // metodo actulizar ser usado en el hilo
     public void actualizarJuego(){
         dino.actualizar();
+    }
+    
+    public void incrementarPuntaje(){
+        this.puntaje++;
     }
 }

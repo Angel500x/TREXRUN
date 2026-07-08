@@ -9,36 +9,27 @@ package com.dinogame.threads;
  * @author angel
  */
 import com.dinogame.gui.GamePanel;
-public class GameThread implements Runnable{
+public class ScoreThread implements Runnable {
     private GamePanel panel;
     private boolean enEjecucion;
 
-    // El constructor con el panel
-    public GameThread(GamePanel panel) {
+    public ScoreThread(GamePanel panel) {
         this.panel = panel;
         this.enEjecucion = true;
     }
 
-    //MÉTODO correr
     @Override
     public void run() {
-        // Mientras el juego esté en ejecución...
         while (enEjecucion) {
-            //movimiento
-            panel.actualizarJuego();
-            
-            // pintar y volver pintar
-            panel.repaint();
-            
             try {
-                Thread.sleep(15); // 16 ms * 60 vueltas ≈ 1000 ms (1 segundo)
+                Thread.sleep(100); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            panel.incrementarPuntaje();
         }
     }
 
-    // Método detener juego
     public void detener() {
         this.enEjecucion = false;
     }
