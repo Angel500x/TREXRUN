@@ -18,6 +18,8 @@ import com.dinogame.threads.GameThread;
 import com.dinogame.threads.ScoreThread;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 public class GamePanel extends JPanel implements KeyListener {
     
@@ -30,17 +32,33 @@ public class GamePanel extends JPanel implements KeyListener {
     private boolean juegoTerminado = false;
     
     private FloorThread logicaSuelo; 
-    private int sueloX = 0;          
+    private int sueloX = 0;  
+    
+    private Image imgDino;
+    private Image imgCactus;
     // Constructor del lienzo
     public GamePanel() {
-        dino = new Dinosaur(50, 350);
-        cactus = new Obstacle(850, 350);
+        dino = new Dinosaur(50, 350, imgDino);
+        cactus = new Obstacle(850, 350, imgCactus);
         // color del panel 
         setBackground(Color.WHITE);
         
         //Tecla 
         setFocusable(true);
         addKeyListener(this);
+        
+        // CARGAR IMÁGENES DESDE LA CARPETA RESOURCES
+            try {
+             imgDino = new ImageIcon(getClass().getResource("/resources/images/dino")).getImage();
+              imgCactus = new ImageIcon(getClass().getResource("/resources/images/catus.png")).getImage();
+         } catch (Exception e) {
+               System.out.println("Error al cargar imágenes, se usarán rectángulos de respaldo: " + e.getMessage());
+         }
+
+            // PASAR LAS IMÁGENES A LAS ENTIDADES
+            // Modificamos el nacimiento del Dino y Cactus para enviarles la imagen correspondiente
+            dino = new Dinosaur(50, 350, imgDino);
+            cactus = new Obstacle(850, 350, imgCactus);
         
         //implemetamos el hilo del dino para saltar
         loghilo = new GameThread(this);
@@ -111,7 +129,7 @@ public class GamePanel extends JPanel implements KeyListener {
          cactus.actualizar();
          
          if(cactus.getX() < -30){
-             cactus = new Obstacle(850, 350);
+             cactus = new Obstacle(850, 350, imgCactus);
          }
          
          if (dino.getBounds().intersects(cactus.getBounds())){

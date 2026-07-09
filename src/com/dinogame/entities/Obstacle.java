@@ -10,22 +10,36 @@ package com.dinogame.entities;
  */
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Image;
 public class Obstacle {
     private int x, y, ancho, alto;
     private int velocidad = 7; 
+    
+    private Image imagen;
 
     // Constructor del Obstáculo
-    public Obstacle(int x, int y) {
+    public Obstacle(int x, int y, Image imagen) {
         this.x = x;
         this.y = y;
         this.ancho = 25; // más delgado que el dino
         this.alto = 45;  // Altura del cactus
+        this.imagen = imagen;
     }
         //dibujo del cactus
     public void dibujar(Graphics g) {
+        /*
         // color del cactus
         g.setColor(Color.RED);
         g.fillRect(this.x, this.y, this.ancho, this.alto);
+        */
+        if (imagen != null) {
+            // Dibujamos el sprite del cactus
+            g.drawImage(imagen, this.x, this.y, this.ancho, this.alto, null);
+        } else {
+            // Respaldo por si falla la imagen
+            g.setColor(Color.RED);
+            g.fillRect(this.x, this.y, this.ancho, this.alto);
+        }
     }
 
     // movimiento
