@@ -20,6 +20,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements KeyListener {
     
@@ -36,27 +37,31 @@ public class GamePanel extends JPanel implements KeyListener {
     
     private Image imgDino;
     private Image imgCactus;
+    private Image imgSuelo;
+    
+    private GameWindow ventana;
     // Constructor del lienzo
-    public GamePanel() {
+    public GamePanel(GameWindow ventana) {
+        this.ventana = ventana;
         dino = new Dinosaur(50, 350, imgDino);
         cactus = new Obstacle(850, 350, imgCactus);
         // color del panel 
-        setBackground(Color.WHITE);
+        setBackground(new Color(32, 33, 36));
         
         //Tecla 
         setFocusable(true);
         addKeyListener(this);
         
-        // CARGAR IMÁGENES DESDE LA CARPETA RESOURCES
+        
             try {
-             imgDino = new ImageIcon(getClass().getResource("/resources/images/dino")).getImage();
-              imgCactus = new ImageIcon(getClass().getResource("/resources/images/catus.png")).getImage();
+             imgDino = new ImageIcon(getClass().getResource("/resources/images/DINO.png")).getImage();
+              imgCactus = new ImageIcon(getClass().getResource("/resources/images/CACTUS.png")).getImage();
+              imgSuelo = new ImageIcon(getClass().getResource("/resources/images/PISO.png")).getImage();
          } catch (Exception e) {
-               System.out.println("Error al cargar imágenes, se usarán rectángulos de respaldo: " + e.getMessage());
+               System.out.println("Error al cargar imagenes: " + e.getMessage());
          }
-
-            // PASAR LAS IMÁGENES A LAS ENTIDADES
-            // Modificamos el nacimiento del Dino y Cactus para enviarles la imagen correspondiente
+            
+            
             dino = new Dinosaur(50, 350, imgDino);
             cactus = new Obstacle(850, 350, imgCactus);
         
@@ -88,12 +93,21 @@ public class GamePanel extends JPanel implements KeyListener {
           for (int i = 0; i < 850; i += 5) {
     // El hilo del suelo modifica 'sueloX', haciendo que estas líneas grises se muevan
     g.drawLine(i + sueloX, 400, i + sueloX + 40, 450);
-}
+          }
+        // --- DIBUJAR EL SUELO CON IMAGEN ---
+        if (imgSuelo != null) {
+            int anchoSueloImagen = 850;
+    
+          for (int i = 0; i < 850; i += anchoSueloImagen) {
+              g.drawImage(imgSuelo, i + sueloX, 400, anchoSueloImagen, 350, this);
+          }
+        } else {
+         g.setColor(Color.GRAY);
+         g.drawLine(0, 400, 800, 400);
+        }
 
         // color del donde esta nuestro dino
           g.setColor(Color.green);
-          //dibujamos un rectangulo del dino cerca del piso
-          //50 en x y 350 en y -> 40 y 50 de ancho y alto de dino
           dino.dibujar(g);
           cactus.dibujar(g);
           // CColor de la letras del puntaje
@@ -118,7 +132,6 @@ public class GamePanel extends JPanel implements KeyListener {
     @Override
     public void keyPressed(KeyEvent ke) {
         if (ke.getKeyCode() == KeyEvent.VK_SPACE || ke.getKeyCode() == KeyEvent.VK_UP){
-            System.out.println("Verificar saltar");
             dino.saltando();
         }
     }
@@ -141,6 +154,10 @@ public class GamePanel extends JPanel implements KeyListener {
              juegoTerminado = true;
              loghilo.detener();
              score.detener();
+             ventana.actualizarRecord(this.puntaje);
+             Timer timer = new Timer(1000, e -> ventana.mostrarMenu());
+             timer.setRepeats(false);
+             timer.start();
          }
          
          if (dino.getBounds().intersects(cactus.getBounds())) {
@@ -162,7 +179,7 @@ public class GamePanel extends JPanel implements KeyListener {
     }
     
     public void actualizarSuelo() {
-    if (juegoTerminado) return; // Si perdiste, el suelo se detiene
+    if (juegoTerminado) return; 
     
     // Movemos el suelo hacia la izquierda
     sueloX -= 5; 
@@ -170,5 +187,6 @@ public class GamePanel extends JPanel implements KeyListener {
     if (sueloX <= -40) {
         sueloX = 0;
     }
+    
 }
 }

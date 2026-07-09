@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 public class main {
     public static void main(String[] args) {
         GameWindow ventana = new GameWindow();
+        ventana.mostrarMenu();
         ventana.setVisible(true);
         
     }

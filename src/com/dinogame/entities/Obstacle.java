@@ -21,8 +21,8 @@ public class Obstacle {
     public Obstacle(int x, int y, Image imagen) {
         this.x = x;
         this.y = y;
-        this.ancho = 25; // más delgado que el dino
-        this.alto = 45;  // Altura del cactus
+        this.ancho = 45; // más delgado que el dino
+        this.alto = 50;  // Altura del cactus
         this.imagen = imagen;
     }
         //dibujo del cactus
@@ -33,10 +33,8 @@ public class Obstacle {
         g.fillRect(this.x, this.y, this.ancho, this.alto);
         */
         if (imagen != null) {
-            // Dibujamos el sprite del cactus
             g.drawImage(imagen, this.x, this.y, this.ancho, this.alto, null);
         } else {
-            // Respaldo por si falla la imagen
             g.setColor(Color.RED);
             g.fillRect(this.x, this.y, this.ancho, this.alto);
         }
