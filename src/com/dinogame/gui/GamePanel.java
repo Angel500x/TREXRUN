@@ -84,6 +84,11 @@ public class GamePanel extends JPanel implements KeyListener {
           g.setColor(Color.blue);
           //la dibujamos de 0 a 800 en x, y de y 400
           g.drawLine(0, 400, 800, 400);
+          g.setColor(Color.GREEN);
+          for (int i = 0; i < 850; i += 5) {
+    // El hilo del suelo modifica 'sueloX', haciendo que estas líneas grises se muevan
+    g.drawLine(i + sueloX, 400, i + sueloX + 40, 450);
+}
 
         // color del donde esta nuestro dino
           g.setColor(Color.green);
@@ -92,7 +97,7 @@ public class GamePanel extends JPanel implements KeyListener {
           dino.dibujar(g);
           cactus.dibujar(g);
           // CColor de la letras del puntaje
-            g.setColor(Color.BLACK);
+            g.setColor(Color.ORANGE);
             // fuente de la letra
             g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
             //dibujamos el texto del puntaje
