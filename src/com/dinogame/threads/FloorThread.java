@@ -21,10 +21,11 @@ public class FloorThread implements Runnable{
 
     @Override
     public void run() {
-        // Mientras el juego siga corriendo...
         while (enEjecucion) {
+            
             try {
                 Thread.sleep(20); 
+                
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

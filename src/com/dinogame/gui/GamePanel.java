@@ -40,6 +40,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private Image imgSuelo;
     
     private GameWindow ventana;
+    private Image imgPaisaje;
     // Constructor del lienzo
     public GamePanel(GameWindow ventana) {
         this.ventana = ventana;
@@ -57,6 +58,7 @@ public class GamePanel extends JPanel implements KeyListener {
              imgDino = new ImageIcon(getClass().getResource("/resources/images/DINO.png")).getImage();
               imgCactus = new ImageIcon(getClass().getResource("/resources/images/CACTUS.png")).getImage();
               imgSuelo = new ImageIcon(getClass().getResource("/resources/images/PISO.png")).getImage();
+              imgPaisaje = new ImageIcon(getClass().getResource("/resources/images/PAISAJE.png")).getImage();
          } catch (Exception e) {
                System.out.println("Error al cargar imagenes: " + e.getMessage());
          }
@@ -84,6 +86,10 @@ public class GamePanel extends JPanel implements KeyListener {
     protected void paintComponent(Graphics g) {
         //limpiamos pantalla
         super.paintComponent(g);
+        
+    if (imgPaisaje != null) {
+        g.drawImage(imgPaisaje, 0, 0, 800, 600, this);
+    }
         
         // color linea azul piso 
           g.setColor(Color.blue);

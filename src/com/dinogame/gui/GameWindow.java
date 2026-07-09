@@ -60,5 +60,6 @@ public class GameWindow extends JFrame{
         if (nuevoPuntaje > recordPuntaje) {
             recordPuntaje = nuevoPuntaje;
         }
+        
     }
 }
