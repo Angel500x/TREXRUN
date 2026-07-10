@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Color;
 import com.dinogame.entities.Dinosaur;
 import com.dinogame.entities.Obstacle;
+import com.dinogame.entities.Pterodactyl;
 import com.dinogame.threads.FloorThread;
 import com.dinogame.threads.GameThread;
 import com.dinogame.threads.ScoreThread;
@@ -41,6 +42,11 @@ public class GamePanel extends JPanel implements KeyListener {
     
     private GameWindow ventana;
     private Image imgPaisaje;
+    
+    private Image imgPtero;
+    private Pterodactyl ptero;
+    private boolean pteroActivo = false; 
+    
     // Constructor del lienzo
     public GamePanel(GameWindow ventana) {
         this.ventana = ventana;
@@ -59,6 +65,7 @@ public class GamePanel extends JPanel implements KeyListener {
               imgCactus = new ImageIcon(getClass().getResource("/resources/images/CACTUS.png")).getImage();
               imgSuelo = new ImageIcon(getClass().getResource("/resources/images/PISO.png")).getImage();
               imgPaisaje = new ImageIcon(getClass().getResource("/resources/images/PAISAJE.png")).getImage();
+              imgPtero = new ImageIcon(getClass().getResource("/resources/images/Pterodactilo.png")).getImage();
          } catch (Exception e) {
                System.out.println("Error al cargar imagenes: " + e.getMessage());
          }
@@ -66,6 +73,9 @@ public class GamePanel extends JPanel implements KeyListener {
             
             dino = new Dinosaur(50, 350, imgDino);
             cactus = new Obstacle(850, 350, imgCactus);
+            ptero = new Pterodactyl(1200, 1, imgPtero);
+        pteroActivo = false; // Empieza desactivada
+        //implemetamos el hilo del dino para saltar
         
         //implemetamos el hilo del dino para saltar
         loghilo = new GameThread(this);
@@ -116,6 +126,10 @@ public class GamePanel extends JPanel implements KeyListener {
           g.setColor(Color.green);
           dino.dibujar(g);
           cactus.dibujar(g);
+           // ¡Añadimos el ave
+        if (pteroActivo) {
+            ptero.dibujar(g);
+        }
           // CColor de la letras del puntaje
             g.setColor(Color.ORANGE);
             // fuente de la letra
@@ -148,35 +162,53 @@ public class GamePanel extends JPanel implements KeyListener {
     }
     // metodo actulizar ser usado en el hilo
     public void actualizarJuego(){
-        if (juegoTerminado) return;
+         if (juegoTerminado) return;
         dino.actualizar();
-         cactus.actualizar();
-         
-         if(cactus.getX() < -30){
-             cactus = new Obstacle(850, 350, imgCactus);
-         }
-         
-         if (dino.getBounds().intersects(cactus.getBounds())){
-             juegoTerminado = true;
-             loghilo.detener();
-             score.detener();
-             ventana.actualizarRecord(this.puntaje);
-             Timer timer = new Timer(1000, e -> ventana.mostrarMenu());
-             timer.setRepeats(false);
-             timer.start();
-         }
-         
-         if (dino.getBounds().intersects(cactus.getBounds())) {
-                juegoTerminado = true;
-                if(loghilo != null){
-                loghilo.detener();
+        cactus.actualizar();
+        if(cactus.getX() < -30){
+            cactus = new Obstacle(850, 350, imgCactus);
+        }
+
+        if (pteroActivo) {
+            ptero.actualizar(); 
+            if (ptero.getX() < -50) {
+                pteroActivo = false; // La desactivamos
+            }
+        } else {
+            java.util.Random rand = new java.util.Random();
+            if (rand.nextInt(120) == 7) { 
+                int distanciaSeguraX = cactus.getX() + 350;
+                if (distanciaSeguraX < 850) {
+                    distanciaSeguraX = 850;
                 }
-                if (score != null) {
-                score.detener();
-                }
-                if(logicaSuelo != null){
-                logicaSuelo.detener();
-                }
+                int alturaAlAzar = rand.nextInt(2) + 1;
+                ptero = new Pterodactyl(distanciaSeguraX, alturaAlAzar, imgPtero); 
+                pteroActivo = true; // ¡A volar!
+            }
+        }
+
+        //DETECTAR COLISIONES 
+        boolean huboChoque = false;
+
+        // Choque con Cactus
+        if (dino.getBounds().intersects(cactus.getBounds())) {
+            huboChoque = true;
+        }
+
+        // Choque con Ave 
+        if (pteroActivo && dino.getBounds().intersects(ptero.getBounds())) {
+            huboChoque = true;
+        }
+
+        if (huboChoque) {
+            juegoTerminado = true;
+            loghilo.detener();
+            score.detener();
+            logicaSuelo.detener();
+            ventana.actualizarRecord(this.puntaje);
+            javax.swing.Timer timer = new javax.swing.Timer(1000, e -> ventana.mostrarMenu());
+            timer.setRepeats(false);
+            timer.start();
         }
     }
     
